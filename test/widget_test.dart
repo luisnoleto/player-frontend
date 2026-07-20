@@ -7,7 +7,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:projeto_ponto_1/main.dart';
+import 'package:frontend/main.dart';
 
 void main() {
   testWidgets('login screen is displayed', (WidgetTester tester) async {

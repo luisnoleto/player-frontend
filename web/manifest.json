@@ -1,11 +1,11 @@
 {
-    "name": "projeto_ponto_1",
-    "short_name": "projeto_ponto_1",
+    "name": "frontend",
+    "short_name": "frontend",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Frontend do Sistema de Registro de Ponto.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

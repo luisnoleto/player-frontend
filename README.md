@@ -1,6 +1,6 @@
-# projeto_ponto_1
+# frontend
 
-A new Flutter project.
+Frontend Flutter do Sistema de Registro de Ponto.
 
 ## Getting Started
 
