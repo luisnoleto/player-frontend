@@ -67,8 +67,8 @@ class JornadaService {
     DateTime? fim,
   }) async {
     final queryParameters = <String, dynamic>{
-      if (status != null) 'status': status,
-      if (colaboradorId != null) 'colaboradorId': colaboradorId,
+      'status': ?status,
+      'colaboradorId': ?colaboradorId,
       if (inicio != null) 'inicio': formatApiDate(inicio),
       if (fim != null) 'fim': formatApiDate(fim),
     };
