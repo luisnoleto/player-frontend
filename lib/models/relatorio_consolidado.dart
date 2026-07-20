@@ -9,8 +9,8 @@ class RelatorioConsolidado {
     required this.percentualAderenciaMedio,
   });
 
-  final DateTime periodoInicio;
-  final DateTime periodoFim;
+  final DateTime? periodoInicio;
+  final DateTime? periodoFim;
   final double totalHorasTrabalhadas;
   final int quantidadeAtividadesPlanejadas;
   final int quantidadeAtividadesConcluidas;
@@ -19,8 +19,12 @@ class RelatorioConsolidado {
 
   factory RelatorioConsolidado.fromJson(Map<String, dynamic> json) =>
       RelatorioConsolidado(
-        periodoInicio: DateTime.parse(json['periodoInicio'] as String),
-        periodoFim: DateTime.parse(json['periodoFim'] as String),
+        periodoInicio: json['periodoInicio'] == null
+            ? null
+            : DateTime.parse(json['periodoInicio'] as String),
+        periodoFim: json['periodoFim'] == null
+            ? null
+            : DateTime.parse(json['periodoFim'] as String),
         totalHorasTrabalhadas: (json['totalHorasTrabalhadas'] as num)
             .toDouble(),
         quantidadeAtividadesPlanejadas:
