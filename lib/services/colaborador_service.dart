@@ -22,6 +22,19 @@ class ColaboradorService {
     }
   }
 
+  Future<List<Colaborador>> listarTodos() async {
+    try {
+      final response = await _apiClient.dio.get<List<dynamic>>(
+        '/colaboradores/todos',
+      );
+      return (response.data ?? [])
+          .map((item) => Colaborador.fromJson(item as Map<String, dynamic>))
+          .toList();
+    } on DioException catch (error) {
+      throw AppException.fromDioError(error);
+    }
+  }
+
   Future<Colaborador> buscarPorId(int id) async {
     try {
       final response = await _apiClient.dio.get<Map<String, dynamic>>(
@@ -48,6 +61,14 @@ class ColaboradorService {
   Future<void> inativar(int id) async {
     try {
       await _apiClient.dio.delete<void>('/colaboradores/$id');
+    } on DioException catch (error) {
+      throw AppException.fromDioError(error);
+    }
+  }
+
+  Future<void> reativar(int id) async {
+    try {
+      await _apiClient.dio.post<void>('/colaboradores/$id/reativar');
     } on DioException catch (error) {
       throw AppException.fromDioError(error);
     }

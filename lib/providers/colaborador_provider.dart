@@ -24,6 +24,17 @@ class ColaboradorProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> listarTodos() async {
+    _setLoading();
+    try {
+      colaboradores = await _service.listarTodos();
+    } on AppException catch (exception) {
+      error = exception.message;
+    } finally {
+      _finishLoading();
+    }
+  }
+
   Future<void> criar(ColaboradorRequest request) async {
     _setLoading();
     try {
@@ -40,7 +51,17 @@ class ColaboradorProvider extends ChangeNotifier {
     _setLoading();
     try {
       await _service.inativar(id);
-      colaboradores = colaboradores.where((item) => item.id != id).toList();
+    } on AppException catch (exception) {
+      error = exception.message;
+    } finally {
+      _finishLoading();
+    }
+  }
+
+  Future<void> reativar(int id) async {
+    _setLoading();
+    try {
+      await _service.reativar(id);
     } on AppException catch (exception) {
       error = exception.message;
     } finally {
