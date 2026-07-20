@@ -21,14 +21,15 @@ class RelatorioConsolidado {
       RelatorioConsolidado(
         periodoInicio: DateTime.parse(json['periodoInicio'] as String),
         periodoFim: DateTime.parse(json['periodoFim'] as String),
-        totalHorasTrabalhadas: (json['totalHorasTrabalhadas'] as num).toDouble(),
+        totalHorasTrabalhadas: (json['totalHorasTrabalhadas'] as num)
+            .toDouble(),
         quantidadeAtividadesPlanejadas:
             (json['quantidadeAtividadesPlanejadas'] as num).toInt(),
         quantidadeAtividadesConcluidas:
             (json['quantidadeAtividadesConcluidas'] as num).toInt(),
         quantidadeAtividadesNaoPlanejadas:
             (json['quantidadeAtividadesNaoPlanejadas'] as num).toInt(),
-        percentualAderenciaMedio:
-            (json['percentualAderenciaMedio'] as num).toDouble(),
+        percentualAderenciaMedio: (json['percentualAderenciaMedio'] as num)
+            .toDouble(),
       );
 }

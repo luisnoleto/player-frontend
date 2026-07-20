@@ -13,12 +13,20 @@ class RelatorioProvider extends ChangeNotifier {
   bool isLoading = false;
   String? error;
 
-  Future<void> gerarConsolidado(DateTime inicio, DateTime fim) async {
+  Future<void> gerarConsolidado({
+    int? colaboradorId,
+    DateTime? inicio,
+    DateTime? fim,
+  }) async {
     isLoading = true;
     error = null;
     notifyListeners();
     try {
-      relatorio = await _service.gerarConsolidado(inicio, fim);
+      relatorio = await _service.gerarConsolidado(
+        colaboradorId: colaboradorId,
+        inicio: inicio,
+        fim: fim,
+      );
     } on AppException catch (exception) {
       error = exception.message;
     } finally {

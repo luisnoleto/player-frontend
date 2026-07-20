@@ -16,11 +16,11 @@ class RegistroRpa {
   final bool processado;
 
   factory RegistroRpa.fromJson(Map<String, dynamic> json) => RegistroRpa(
-        id: (json['id'] as num).toInt(),
-        colaboradorId: (json['colaboradorId'] as num).toInt(),
-        tipoRegistro: json['tipoRegistro'] as String,
-        dataHoraRegistro: DateTime.parse(json['dataHoraRegistro'] as String),
-        origem: json['origem'] as String,
-        processado: json['processado'] as bool,
-      );
+    id: (json['id'] as num).toInt(),
+    colaboradorId: (json['colaboradorId'] as num).toInt(),
+    tipoRegistro: json['tipoRegistro'] as String,
+    dataHoraRegistro: DateTime.parse(json['dataHoraRegistro'] as String),
+    origem: json['origem'] as String,
+    processado: json['processado'] as bool,
+  );
 }

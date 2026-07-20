@@ -30,26 +30,30 @@ class JornadaDetalhe {
   final List<AtividadeNaoPlanejada> atividadesNaoPlanejadas;
 
   factory JornadaDetalhe.fromJson(Map<String, dynamic> json) => JornadaDetalhe(
-        id: (json['id'] as num).toInt(),
-        colaboradorId: (json['colaboradorId'] as num).toInt(),
-        colaboradorNome: json['colaboradorNome'] as String,
-        dataHoraEntrada: DateTime.parse(json['dataHoraEntrada'] as String),
-        dataHoraSaida: json['dataHoraSaida'] == null
-            ? null
-            : DateTime.parse(json['dataHoraSaida'] as String),
-        duracaoMinutos: (json['duracaoMinutos'] as num?)?.toInt(),
-        status: StatusJornada.fromJson(json['status'] as String),
-        percentualAderencia: (json['percentualAderencia'] as num?)?.toDouble(),
-        resumoAtividades: json['resumoAtividades'] as String?,
-        atividadesPlanejadas: (json['atividadesPlanejadas'] as List<dynamic>? ?? [])
-            .map((item) => AtividadePlanejada.fromJson(item as Map<String, dynamic>))
+    id: (json['id'] as num).toInt(),
+    colaboradorId: (json['colaboradorId'] as num).toInt(),
+    colaboradorNome: json['colaboradorNome'] as String,
+    dataHoraEntrada: DateTime.parse(json['dataHoraEntrada'] as String),
+    dataHoraSaida: json['dataHoraSaida'] == null
+        ? null
+        : DateTime.parse(json['dataHoraSaida'] as String),
+    duracaoMinutos: (json['duracaoMinutos'] as num?)?.toInt(),
+    status: StatusJornada.fromJson(json['status'] as String),
+    percentualAderencia: (json['percentualAderencia'] as num?)?.toDouble(),
+    resumoAtividades: json['resumoAtividades'] as String?,
+    atividadesPlanejadas: (json['atividadesPlanejadas'] as List<dynamic>? ?? [])
+        .map(
+          (item) => AtividadePlanejada.fromJson(item as Map<String, dynamic>),
+        )
+        .toList(),
+    atividadesNaoPlanejadas:
+        (json['atividadesNaoPlanejadas'] as List<dynamic>? ?? [])
+            .map(
+              (item) =>
+                  AtividadeNaoPlanejada.fromJson(item as Map<String, dynamic>),
+            )
             .toList(),
-        atividadesNaoPlanejadas:
-            (json['atividadesNaoPlanejadas'] as List<dynamic>? ?? [])
-                .map((item) =>
-                    AtividadeNaoPlanejada.fromJson(item as Map<String, dynamic>))
-                .toList(),
-      );
+  );
 }
 
 class IniciarJornadaRequest {
@@ -62,11 +66,11 @@ class IniciarJornadaRequest {
   final List<String> atividadesPlanejadas;
 
   Map<String, dynamic> toJson() => {
-        'colaboradorId': colaboradorId,
-        'atividadesPlanejadas': atividadesPlanejadas
-            .map((descricao) => {'descricao': descricao})
-            .toList(),
-      };
+    'colaboradorId': colaboradorId,
+    'atividadesPlanejadas': atividadesPlanejadas
+        .map((descricao) => {'descricao': descricao})
+        .toList(),
+  };
 }
 
 class EncerrarJornadaRequest {
@@ -79,9 +83,9 @@ class EncerrarJornadaRequest {
   final List<String> atividadesNaoPlanejadas;
 
   Map<String, dynamic> toJson() => {
-        'atividadesConcluidasIds': atividadesConcluidasIds,
-        'atividadesNaoPlanejadas': atividadesNaoPlanejadas
-            .map((descricao) => {'descricao': descricao})
-            .toList(),
-      };
+    'atividadesConcluidasIds': atividadesConcluidasIds,
+    'atividadesNaoPlanejadas': atividadesNaoPlanejadas
+        .map((descricao) => {'descricao': descricao})
+        .toList(),
+  };
 }

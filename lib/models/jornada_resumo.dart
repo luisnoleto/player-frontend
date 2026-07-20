@@ -14,9 +14,9 @@ enum StatusJornada {
   }
 
   String toJson() => switch (this) {
-        StatusJornada.emAndamento => 'EM_ANDAMENTO',
-        StatusJornada.finalizada => 'FINALIZADA',
-      };
+    StatusJornada.emAndamento => 'EM_ANDAMENTO',
+    StatusJornada.finalizada => 'FINALIZADA',
+  };
 }
 
 class JornadaResumo {
@@ -41,15 +41,15 @@ class JornadaResumo {
   final double? percentualAderencia;
 
   factory JornadaResumo.fromJson(Map<String, dynamic> json) => JornadaResumo(
-        id: (json['id'] as num).toInt(),
-        colaboradorId: (json['colaboradorId'] as num).toInt(),
-        colaboradorNome: json['colaboradorNome'] as String,
-        dataHoraEntrada: DateTime.parse(json['dataHoraEntrada'] as String),
-        dataHoraSaida: json['dataHoraSaida'] == null
-            ? null
-            : DateTime.parse(json['dataHoraSaida'] as String),
-        duracaoMinutos: (json['duracaoMinutos'] as num?)?.toInt(),
-        status: StatusJornada.fromJson(json['status'] as String),
-        percentualAderencia: (json['percentualAderencia'] as num?)?.toDouble(),
-      );
+    id: (json['id'] as num).toInt(),
+    colaboradorId: (json['colaboradorId'] as num).toInt(),
+    colaboradorNome: json['colaboradorNome'] as String,
+    dataHoraEntrada: DateTime.parse(json['dataHoraEntrada'] as String),
+    dataHoraSaida: json['dataHoraSaida'] == null
+        ? null
+        : DateTime.parse(json['dataHoraSaida'] as String),
+    duracaoMinutos: (json['duracaoMinutos'] as num?)?.toInt(),
+    status: StatusJornada.fromJson(json['status'] as String),
+    percentualAderencia: (json['percentualAderencia'] as num?)?.toDouble(),
+  );
 }

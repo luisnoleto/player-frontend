@@ -18,13 +18,13 @@ class Colaborador {
   final bool ativo;
 
   factory Colaborador.fromJson(Map<String, dynamic> json) => Colaborador(
-        id: (json['id'] as num).toInt(),
-        nome: json['nome'] as String,
-        cpf: json['cpf'] as String,
-        cargo: json['cargo'] as String?,
-        dataAdmissao: DateTime.parse(json['dataAdmissao'] as String),
-        ativo: json['ativo'] as bool,
-      );
+    id: (json['id'] as num).toInt(),
+    nome: json['nome'] as String,
+    cpf: json['cpf'] as String,
+    cargo: json['cargo'] as String?,
+    dataAdmissao: DateTime.parse(json['dataAdmissao'] as String),
+    ativo: json['ativo'] as bool,
+  );
 }
 
 class ColaboradorRequest {
@@ -41,9 +41,9 @@ class ColaboradorRequest {
   final DateTime dataAdmissao;
 
   Map<String, dynamic> toJson() => {
-        'nome': nome,
-        'cpf': cpf,
-        'cargo': cargo,
-        'dataAdmissao': formatApiDate(dataAdmissao),
-      };
+    'nome': nome,
+    'cpf': cpf,
+    'cargo': cargo,
+    'dataAdmissao': formatApiDate(dataAdmissao),
+  };
 }

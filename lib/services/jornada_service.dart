@@ -40,7 +40,9 @@ class JornadaService {
 
   Future<JornadaDetalhe> buscarDetalhe(int id) async {
     try {
-      final response = await _apiClient.dio.get<Map<String, dynamic>>('/jornadas/$id');
+      final response = await _apiClient.dio.get<Map<String, dynamic>>(
+        '/jornadas/$id',
+      );
       return JornadaDetalhe.fromJson(response.data!);
     } on DioException catch (error) {
       throw AppException.fromDioError(error);

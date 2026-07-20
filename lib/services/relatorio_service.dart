@@ -10,16 +10,18 @@ class RelatorioService {
 
   final ApiClient _apiClient;
 
-  Future<RelatorioConsolidado> gerarConsolidado(
-    DateTime inicio,
-    DateTime fim,
-  ) async {
+  Future<RelatorioConsolidado> gerarConsolidado({
+    int? colaboradorId,
+    DateTime? inicio,
+    DateTime? fim,
+  }) async {
     try {
       final response = await _apiClient.dio.get<Map<String, dynamic>>(
         '/relatorios/consolidado',
-        queryParameters: {
-          'inicio': formatApiDate(inicio),
-          'fim': formatApiDate(fim),
+        queryParameters: <String, dynamic>{
+          'colaboradorId': ?colaboradorId,
+          if (inicio != null) 'inicio': formatApiDate(inicio),
+          if (fim != null) 'fim': formatApiDate(fim),
         },
       );
       return RelatorioConsolidado.fromJson(response.data!);
