@@ -46,13 +46,15 @@ class _HistoricoPageState extends State<HistoricoPage> {
           ? const Center(child: Text('Nenhuma jornada encontrada.'))
           : RefreshIndicator(
               onRefresh: _carregarHistorico,
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
                 itemCount: provider.historico.length,
-                separatorBuilder: (_, _) => const Divider(height: 1),
-                itemBuilder: (context, index) => JornadaListTile(
-                  jornada: provider.historico[index],
-                  mostrarColaborador: false,
+                itemBuilder: (context, index) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: JornadaListTile(
+                    jornada: provider.historico[index],
+                    mostrarColaborador: false,
+                  ),
                 ),
               ),
             ),
