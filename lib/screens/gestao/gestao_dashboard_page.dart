@@ -131,8 +131,6 @@ class _GestaoDashboardPageState extends State<GestaoDashboardPage> {
                         index++
                       ) ...[
                         JornadaListTile(jornada: ultimasJornadas[index]),
-                        if (index < ultimasJornadas.length - 1)
-                          const Divider(height: 1),
                       ],
                     ],
                   ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class AdherenceProgressBar extends StatelessWidget {
   const AdherenceProgressBar({super.key, required this.percentual});
@@ -21,11 +22,27 @@ class AdherenceProgressBar extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text('Aderência', style: Theme.of(context).textTheme.labelLarge),
-            const Spacer(),
-            Text(
-              '${valor.round()}%',
-              style: Theme.of(context).textTheme.labelLarge,
+            Tooltip(
+              message:
+                  'Média simples do percentual de conclusão das atividades planejadas para as jornadas dos colaboradores.',
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Aderência',
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: colors.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(
+                    LucideIcons.info,
+                    size: 12,
+                    color: colors.onSurfaceVariant,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
