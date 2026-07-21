@@ -115,25 +115,17 @@ class _GestaoDashboardPageState extends State<GestaoDashboardPage> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
-              if (ultimasJornadas.isEmpty)
+             if (ultimasJornadas.isEmpty)
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 16),
                   child: Text('Nenhuma jornada encontrada.'),
                 )
               else
-                Card(
-                  clipBehavior: Clip.antiAlias,
-                  child: Column(
-                    children: [
-                      for (
-                        var index = 0;
-                        index < ultimasJornadas.length;
-                        index++
-                      ) ...[
-                        JornadaListTile(jornada: ultimasJornadas[index]),
-                      ],
-                    ],
-                  ),
+                Column(
+                  children: [
+                    for (var index = 0; index < ultimasJornadas.length; index++)
+                      JornadaListTile(jornada: ultimasJornadas[index]),
+                  ],
                 ),
               const SizedBox(height: 28),
               Text('Atalhos', style: Theme.of(context).textTheme.titleMedium),
