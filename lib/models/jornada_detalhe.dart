@@ -1,5 +1,4 @@
-import 'atividade_nao_planejada.dart';
-import 'atividade_planejada.dart';
+import 'atividade.dart';
 import 'jornada_resumo.dart';
 
 class JornadaDetalhe {
@@ -13,8 +12,7 @@ class JornadaDetalhe {
     required this.status,
     this.percentualAderencia,
     this.resumoAtividades,
-    required this.atividadesPlanejadas,
-    required this.atividadesNaoPlanejadas,
+    required this.atividades,
   });
 
   final int id;
@@ -26,8 +24,15 @@ class JornadaDetalhe {
   final StatusJornada status;
   final double? percentualAderencia;
   final String? resumoAtividades;
-  final List<AtividadePlanejada> atividadesPlanejadas;
-  final List<AtividadeNaoPlanejada> atividadesNaoPlanejadas;
+  final List<Atividade> atividades;
+
+  List<Atividade> get atividadesPlanejadas => atividades
+      .where((atividade) => atividade.tipo == TipoAtividade.planejada)
+      .toList(growable: false);
+
+  List<Atividade> get atividadesNaoPlanejadas => atividades
+      .where((atividade) => atividade.tipo == TipoAtividade.naoPlanejada)
+      .toList(growable: false);
 
   factory JornadaDetalhe.fromJson(Map<String, dynamic> json) => JornadaDetalhe(
     id: (json['id'] as num).toInt(),
@@ -41,18 +46,9 @@ class JornadaDetalhe {
     status: StatusJornada.fromJson(json['status'] as String),
     percentualAderencia: (json['percentualAderencia'] as num?)?.toDouble(),
     resumoAtividades: json['resumoAtividades'] as String?,
-    atividadesPlanejadas: (json['atividadesPlanejadas'] as List<dynamic>? ?? [])
-        .map(
-          (item) => AtividadePlanejada.fromJson(item as Map<String, dynamic>),
-        )
+    atividades: (json['atividades'] as List<dynamic>? ?? [])
+        .map((item) => Atividade.fromJson(item as Map<String, dynamic>))
         .toList(),
-    atividadesNaoPlanejadas:
-        (json['atividadesNaoPlanejadas'] as List<dynamic>? ?? [])
-            .map(
-              (item) =>
-                  AtividadeNaoPlanejada.fromJson(item as Map<String, dynamic>),
-            )
-            .toList(),
   );
 }
 
