@@ -6,12 +6,23 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:frontend/main.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:frontend/core/api_client.dart';
+import 'package:frontend/core/session_provider.dart';
+import 'package:frontend/screens/auth/login_page.dart';
+import 'package:frontend/services/auth_service.dart';
 
 void main() {
   testWidgets('login screen is displayed', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
+    final apiClient = ApiClient();
+    final session = SessionProvider(AuthService(apiClient), apiClient);
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: session,
+        child: const MaterialApp(home: LoginPage()),
+      ),
+    );
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.text('Usuário'), findsOneWidget);
     expect(find.text('Senha'), findsOneWidget);

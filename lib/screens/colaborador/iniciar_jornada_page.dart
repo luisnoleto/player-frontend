@@ -48,8 +48,8 @@ class _IniciarJornadaPageState extends State<IniciarJornadaPage> {
   }
 
   Future<void> _iniciar() async {
-    final colaborador = context.read<SessionProvider>().colaboradorAtual;
-    if (colaborador == null) {
+    final colaboradorId = context.read<SessionProvider>().colaboradorIdAtual;
+    if (colaboradorId == null) {
       context.replace('/area-colaborador');
       return;
     }
@@ -61,7 +61,7 @@ class _IniciarJornadaPageState extends State<IniciarJornadaPage> {
         .toList();
     await provider.iniciar(
       IniciarJornadaRequest(
-        colaboradorId: colaborador.id,
+        colaboradorId: colaboradorId,
         atividadesPlanejadas: atividades,
       ),
     );

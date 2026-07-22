@@ -14,8 +14,25 @@ import '../screens/gestao/jornadas_consulta_page.dart';
 import '../screens/gestao/relatorios_page.dart';
 import '../screens/gestao/rpa_registros_page.dart';
 import '../screens/home/home_page.dart';
+import 'session_provider.dart';
 
-final GoRouter appRouter = GoRouter(
+GoRouter createAppRouter(SessionProvider session) => GoRouter(
+  refreshListenable: session,
+  redirect: (_, state) {
+    final path = state.uri.path;
+    if (!session.estaLogado) return path == '/' ? null : '/';
+    if (path == '/') {
+      return session.isGestor ? '/gestao' : '/area-colaborador/dashboard';
+    }
+    if (!session.isGestor && (path == '/home' || path == '/area-colaborador')) {
+      return '/area-colaborador/dashboard';
+    }
+    final rotaDeGestao = path == '/colaboradores' || path.startsWith('/gestao');
+    if (rotaDeGestao && !session.isGestor) {
+      return '/area-colaborador/dashboard';
+    }
+    return null;
+  },
   routes: [
     GoRoute(path: '/', builder: (_, _) => const LoginPage()),
     GoRoute(path: '/home', builder: (_, _) => const HomePage()),

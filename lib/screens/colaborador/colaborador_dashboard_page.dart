@@ -30,8 +30,8 @@ class _ColaboradorDashboardPageState extends State<ColaboradorDashboardPage> {
   Future<void> _carregarDados() async {
     if (!mounted) return;
 
-    final colaborador = context.read<SessionProvider>().colaboradorAtual;
-    if (colaborador == null) {
+    final colaboradorId = context.read<SessionProvider>().colaboradorIdAtual;
+    if (colaboradorId == null) {
       context.replace('/area-colaborador');
       return;
     }
@@ -41,12 +41,12 @@ class _ColaboradorDashboardPageState extends State<ColaboradorDashboardPage> {
     final atividades = context.read<AtividadeProvider>();
 
     await Future.wait([
-      relatorio.gerarConsolidado(colaboradorId: colaborador.id),
+      relatorio.gerarConsolidado(colaboradorId: colaboradorId),
       jornadas.listarComFiltros(
-        colaboradorId: colaborador.id,
+        colaboradorId: colaboradorId,
         status: 'EM_ANDAMENTO',
       ),
-      atividades.listarPorColaborador(colaborador.id),
+      atividades.listarPorColaborador(colaboradorId),
     ]);
 
     if (!mounted) return;
@@ -63,8 +63,8 @@ class _ColaboradorDashboardPageState extends State<ColaboradorDashboardPage> {
   Widget build(BuildContext context) {
     return Consumer2<SessionProvider, RelatorioProvider>(
       builder: (context, session, relatorioProvider, _) {
-        final colaborador = session.colaboradorAtual;
-        if (colaborador == null) {
+        final colaboradorNome = session.colaboradorNomeAtual;
+        if (colaboradorNome == null) {
           return const Scaffold(
             appBar: _DashboardAppBar(),
             body: Center(child: CircularProgressIndicator()),
@@ -109,25 +109,26 @@ class _ColaboradorDashboardPageState extends State<ColaboradorDashboardPage> {
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          colaborador.nome,
+                                          colaboradorNome,
                                           style: Theme.of(
                                             context,
                                           ).textTheme.headlineSmall,
                                         ),
                                       ),
-                                      TextButton.icon(
-                                        onPressed: () {
-                                          context
-                                              .read<SessionProvider>()
-                                              .limpar();
-                                          context.go('/area-colaborador');
-                                        },
-                                        icon: const Icon(
-                                          LucideIcons.refreshCw,
-                                          size: 18,
+                                      if (session.isGestor)
+                                        TextButton.icon(
+                                          onPressed: () {
+                                            context
+                                                .read<SessionProvider>()
+                                                .limpar();
+                                            context.go('/area-colaborador');
+                                          },
+                                          icon: const Icon(
+                                            LucideIcons.refreshCw,
+                                            size: 18,
+                                          ),
+                                          label: const Text('Trocar'),
                                         ),
-                                        label: const Text('Trocar'),
-                                      ),
                                     ],
                                   )
                                   .animate()
@@ -281,6 +282,18 @@ class _DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(title: Text('Painel do Colaborador'));
+    return AppBar(
+      title: const Text('Painel do Colaborador'),
+      actions: [
+        IconButton(
+          onPressed: () {
+            context.read<SessionProvider>().logout();
+            context.go('/');
+          },
+          tooltip: 'Sair',
+          icon: const Icon(LucideIcons.logOut),
+        ),
+      ],
+    );
   }
 }

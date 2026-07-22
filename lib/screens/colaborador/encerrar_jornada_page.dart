@@ -30,8 +30,8 @@ class _EncerrarJornadaPageState extends State<EncerrarJornadaPage> {
   }
 
   Future<void> _carregarJornada() async {
-    final colaborador = context.read<SessionProvider>().colaboradorAtual;
-    if (colaborador == null) {
+    final colaboradorId = context.read<SessionProvider>().colaboradorIdAtual;
+    if (colaboradorId == null) {
       context.replace('/area-colaborador');
       return;
     }
@@ -40,7 +40,7 @@ class _EncerrarJornadaPageState extends State<EncerrarJornadaPage> {
     final atividadeProvider = context.read<AtividadeProvider>();
     await Future.wait([
       provider.buscarDetalhe(widget.jornadaId),
-      atividadeProvider.listarPorColaborador(colaborador.id),
+      atividadeProvider.listarPorColaborador(colaboradorId),
     ]);
     if (!mounted) return;
 

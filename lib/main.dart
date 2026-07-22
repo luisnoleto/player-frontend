@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 import 'core/api_client.dart';
 import 'core/app_router.dart';
@@ -14,15 +15,19 @@ import 'services/atividade_service.dart';
 import 'services/jornada_service.dart';
 import 'services/registro_rpa_service.dart';
 import 'services/relatorio_service.dart';
+import 'services/auth_service.dart';
 import 'theme/app_theme.dart';
 
 void main() {
   final apiClient = ApiClient();
+  final session = SessionProvider(AuthService(apiClient), apiClient);
+  final router = createAppRouter(session);
+  apiClient.onUnauthorized = session.logout;
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => SessionProvider()),
+        ChangeNotifierProvider.value(value: session),
         ChangeNotifierProvider(
           create: (_) => AtividadeProvider(AtividadeService(apiClient)),
         ),
@@ -39,19 +44,21 @@ void main() {
           create: (_) => RegistroRpaProvider(RegistroRpaService(apiClient)),
         ),
       ],
-      child: const MyApp(),
+      child: MyApp(router: router),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.router});
+
+  final GoRouter router;
 
   @override
   Widget build(BuildContext context) => MaterialApp.router(
     debugShowCheckedModeBanner: false,
     title: 'Sistema de Registro de Ponto',
     theme: buildAppTheme(),
-    routerConfig: appRouter,
+    routerConfig: router,
   );
 }

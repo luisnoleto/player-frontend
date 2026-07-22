@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/colaborador.dart';
+import '../../models/auth.dart';
 import '../../providers/colaborador_provider.dart';
 
 class ColaboradoresPage extends StatefulWidget {
@@ -113,7 +114,10 @@ class _ColaboradoresPageState extends State<ColaboradoresPage> {
     final nomeController = TextEditingController();
     final cpfController = TextEditingController();
     final cargoController = TextEditingController();
+    final loginController = TextEditingController();
+    final senhaController = TextEditingController();
     DateTime? dataAdmissao;
+    var perfil = PerfilUsuario.colaborador;
     final formKey = GlobalKey<FormState>();
 
     await showDialog<void>(
@@ -163,6 +167,45 @@ class _ColaboradoresPageState extends State<ColaboradoresPage> {
                     decoration: const InputDecoration(
                       labelText: 'Cargo (opcional)',
                     ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: loginController,
+                    decoration: const InputDecoration(labelText: 'Login'),
+                    autocorrect: false,
+                    enableSuggestions: false,
+                    validator: (value) => (value?.trim().length ?? 0) < 3
+                        ? 'Informe um login com ao menos 3 caracteres.'
+                        : null,
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: senhaController,
+                    decoration: const InputDecoration(labelText: 'Senha'),
+                    obscureText: true,
+                    autocorrect: false,
+                    enableSuggestions: false,
+                    validator: (value) => (value?.length ?? 0) < 8
+                        ? 'A senha deve ter ao menos 8 caracteres.'
+                        : null,
+                  ),
+                  const SizedBox(height: 12),
+                  DropdownButtonFormField<PerfilUsuario>(
+                    initialValue: perfil,
+                    decoration: const InputDecoration(labelText: 'Perfil'),
+                    items: PerfilUsuario.values
+                        .map(
+                          (item) => DropdownMenuItem(
+                            value: item,
+                            child: Text(item.label),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setDialogState(() => perfil = value);
+                      }
+                    },
                   ),
                   const SizedBox(height: 12),
                   Align(
@@ -220,6 +263,9 @@ class _ColaboradoresPageState extends State<ColaboradoresPage> {
                         ? null
                         : cargoController.text.trim(),
                     dataAdmissao: dataAdmissao!,
+                    login: loginController.text.trim().toLowerCase(),
+                    senha: senhaController.text,
+                    perfil: perfil,
                   ),
                 );
 
@@ -242,6 +288,8 @@ class _ColaboradoresPageState extends State<ColaboradoresPage> {
     nomeController.dispose();
     cpfController.dispose();
     cargoController.dispose();
+    loginController.dispose();
+    senhaController.dispose();
   }
 
   void _mostrarMensagem(String mensagem) {
@@ -329,7 +377,9 @@ class _ColaboradoresPageState extends State<ColaboradoresPage> {
                                       : Icons.person_off_outlined,
                                 ),
                               ),
-                              title: Text(colaborador.nome),
+                              title: Text(
+                                '${colaborador.nome} · ${colaborador.perfil.label}',
+                              ),
                               subtitle: Text(
                                 'CPF: ${colaborador.cpf}\nCargo: ${colaborador.cargo ?? '—'}\nStatus: ${ativo ? 'Ativo' : 'Inativo'}',
                               ),

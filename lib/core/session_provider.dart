@@ -1,26 +1,50 @@
 import 'package:flutter/foundation.dart';
 
+import '../models/auth.dart';
 import '../models/colaborador.dart';
+import '../services/auth_service.dart';
+import 'api_client.dart';
+import 'app_exception.dart';
 
-/// Substituto temporário da autenticação: guarda login e identidade apenas em
-/// memória durante a sessão. Usuário e senha não são validados contra nada;
-/// qualquer par não vazio é aceito para permitir desenhar o fluxo antes do JWT.
-/// Deve ser substituído por um fluxo de login real quando essa etapa existir.
 class SessionProvider extends ChangeNotifier {
+  SessionProvider(this._authService, this._apiClient);
+
+  final AuthService _authService;
+  final ApiClient _apiClient;
+
+  UsuarioAutenticado? usuarioAtual;
   Colaborador? colaboradorAtual;
-  String? usuarioLogado;
-  bool isGestor = false;
+  bool isLoading = false;
+  String? error;
 
-  bool get temColaboradorSelecionado => colaboradorAtual != null;
-  bool get estaLogado => usuarioLogado != null;
+  bool get estaLogado => usuarioAtual != null;
+  bool get isGestor => usuarioAtual?.perfil == PerfilUsuario.gestor;
+  int? get colaboradorIdAtual =>
+      colaboradorAtual?.id ?? (isGestor ? null : usuarioAtual?.id);
+  String? get colaboradorNomeAtual =>
+      colaboradorAtual?.nome ?? (isGestor ? null : usuarioAtual?.nome);
+  bool get temColaboradorSelecionado => colaboradorIdAtual != null;
 
-  void login(String usuario) {
-    usuarioLogado = usuario;
-    isGestor = usuario.trim().toLowerCase() == 'playercontabilidade';
+  Future<bool> login(String login, String senha) async {
+    isLoading = true;
+    error = null;
     notifyListeners();
+    try {
+      usuarioAtual = await _authService.login(login.trim(), senha);
+      _apiClient.setToken(usuarioAtual!.token);
+      colaboradorAtual = null;
+      return true;
+    } on AppException catch (exception) {
+      error = exception.message;
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
   }
 
   void selecionar(Colaborador colaborador) {
+    if (!isGestor) return;
     colaboradorAtual = colaborador;
     notifyListeners();
   }
@@ -31,9 +55,10 @@ class SessionProvider extends ChangeNotifier {
   }
 
   void logout() {
-    usuarioLogado = null;
-    isGestor = false;
+    _apiClient.clearToken();
+    usuarioAtual = null;
     colaboradorAtual = null;
+    error = null;
     notifyListeners();
   }
 }

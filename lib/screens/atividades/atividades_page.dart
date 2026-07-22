@@ -32,12 +32,12 @@ class _AtividadesPageState extends State<AtividadesPage> {
     if (widget.mostrarColaborador) {
       await provider.listarTodas();
     } else {
-      final colaborador = context.read<SessionProvider>().colaboradorAtual;
-      if (colaborador == null) {
+      final colaboradorId = context.read<SessionProvider>().colaboradorIdAtual;
+      if (colaboradorId == null) {
         if (mounted) context.replace('/area-colaborador');
         return;
       }
-      await provider.listarPorColaborador(colaborador.id);
+      await provider.listarPorColaborador(colaboradorId);
     }
 
     if (mounted && provider.error != null) {

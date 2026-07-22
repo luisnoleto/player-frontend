@@ -30,16 +30,29 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _entrar() {
+  Future<void> _entrar() async {
     if (!_podeEntrar) return;
     final session = context.read<SessionProvider>();
-    session.login(_usuarioController.text.trim());
-    context.go(session.isGestor ? '/gestao' : '/home');
+    final sucesso = await session.login(
+      _usuarioController.text.trim(),
+      _senhaController.text,
+    );
+    if (!mounted) return;
+    if (!sucesso) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text(session.error ?? 'Não foi possível entrar.')),
+        );
+      return;
+    }
+    context.go(session.isGestor ? '/gestao' : '/area-colaborador/dashboard');
   }
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final carregando = context.watch<SessionProvider>().isLoading;
 
     return Scaffold(
       body: Center(
@@ -92,7 +105,9 @@ class _LoginPageState extends State<LoginPage> {
                       controller: _senhaController,
                       onChanged: (_) => setState(() {}),
                       obscureText: !_senhaVisivel,
-                      onSubmitted: (_) => _entrar(),
+                      onSubmitted: (_) {
+                        if (!carregando) _entrar();
+                      },
                       decoration: InputDecoration(
                         labelText: 'Senha',
                         border: const OutlineInputBorder(),
@@ -112,8 +127,13 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const Gap(24),
                     FilledButton(
-                      onPressed: _podeEntrar ? _entrar : null,
-                      child: const Text('Entrar'),
+                      onPressed: _podeEntrar && !carregando ? _entrar : null,
+                      child: carregando
+                          ? const SizedBox.square(
+                              dimension: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text('Entrar'),
                     ),
                   ],
                 ),

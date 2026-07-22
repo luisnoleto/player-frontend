@@ -21,14 +21,14 @@ class _HistoricoPageState extends State<HistoricoPage> {
   }
 
   Future<void> _carregarHistorico() async {
-    final colaborador = context.read<SessionProvider>().colaboradorAtual;
-    if (colaborador == null) {
+    final colaboradorId = context.read<SessionProvider>().colaboradorIdAtual;
+    if (colaboradorId == null) {
       context.replace('/area-colaborador');
       return;
     }
 
     final provider = context.read<JornadaProvider>();
-    await provider.buscarHistorico(colaborador.id);
+    await provider.buscarHistorico(colaboradorId);
     if (mounted && provider.error != null) {
       ScaffoldMessenger.of(
         context,
