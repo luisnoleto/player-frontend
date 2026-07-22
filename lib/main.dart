@@ -8,12 +8,12 @@ import 'core/session_provider.dart';
 import 'providers/colaborador_provider.dart';
 import 'providers/atividade_provider.dart';
 import 'providers/jornada_provider.dart';
-import 'providers/registro_rpa_provider.dart';
+import 'providers/conteudo_portal_provider.dart';
 import 'providers/relatorio_provider.dart';
 import 'services/colaborador_service.dart';
 import 'services/atividade_service.dart';
 import 'services/jornada_service.dart';
-import 'services/registro_rpa_service.dart';
+import 'services/conteudo_portal_service.dart';
 import 'services/relatorio_service.dart';
 import 'services/auth_service.dart';
 import 'theme/app_theme.dart';
@@ -41,7 +41,8 @@ void main() {
           create: (_) => RelatorioProvider(RelatorioService(apiClient)),
         ),
         ChangeNotifierProvider(
-          create: (_) => RegistroRpaProvider(RegistroRpaService(apiClient)),
+          create: (_) =>
+              ConteudoPortalProvider(ConteudoPortalService(apiClient)),
         ),
       ],
       child: MyApp(router: router),

@@ -165,7 +165,7 @@ class _GestaoDashboardPageState extends State<GestaoDashboardPage> {
                     onTap: () => context.push('/gestao/relatorios'),
                   ),
                   _AtalhoCard(
-                    label: 'Registros RPA',
+                    label: 'Conteúdo do Portal',
                     icon: Icons.pending_actions_outlined,
                     onTap: () => context.push('/gestao/rpa'),
                   ),

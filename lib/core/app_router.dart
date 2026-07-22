@@ -12,7 +12,7 @@ import '../screens/gestao/gestao_dashboard_page.dart';
 import '../screens/gestao/horas_colaboradores_page.dart';
 import '../screens/gestao/jornadas_consulta_page.dart';
 import '../screens/gestao/relatorios_page.dart';
-import '../screens/gestao/rpa_registros_page.dart';
+import '../screens/gestao/rpa_conteudos_page.dart';
 import '../screens/home/home_page.dart';
 import 'session_provider.dart';
 
@@ -89,6 +89,6 @@ GoRouter createAppRouter(SessionProvider session) => GoRouter(
       path: '/gestao/relatorios',
       builder: (_, _) => const RelatoriosPage(),
     ),
-    GoRoute(path: '/gestao/rpa', builder: (_, _) => const RpaRegistrosPage()),
+    GoRoute(path: '/gestao/rpa', builder: (_, _) => const RpaConteudosPage()),
   ],
 );
