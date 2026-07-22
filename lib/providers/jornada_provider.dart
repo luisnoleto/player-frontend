@@ -11,6 +11,8 @@ class JornadaProvider extends ChangeNotifier {
   final JornadaService _service;
 
   JornadaDetalhe? jornadaDetalhe;
+  final Map<int, JornadaDetalhe> detalhesPorJornada = {};
+  final Set<int> detalhesCarregando = {};
   List<JornadaResumo> historico = [];
   List<JornadaResumo> jornadas = [];
   bool isLoading = false;
@@ -20,6 +22,7 @@ class JornadaProvider extends ChangeNotifier {
     _setLoading();
     try {
       jornadaDetalhe = await _service.iniciar(request);
+      detalhesPorJornada[jornadaDetalhe!.id] = jornadaDetalhe!;
     } on AppException catch (exception) {
       error = exception.message;
     } finally {
@@ -31,6 +34,7 @@ class JornadaProvider extends ChangeNotifier {
     _setLoading();
     try {
       jornadaDetalhe = await _service.encerrar(jornadaId, request);
+      detalhesPorJornada[jornadaId] = jornadaDetalhe!;
     } on AppException catch (exception) {
       error = exception.message;
     } finally {
@@ -74,10 +78,31 @@ class JornadaProvider extends ChangeNotifier {
     _setLoading();
     try {
       jornadaDetalhe = await _service.buscarDetalhe(id);
+      detalhesPorJornada[id] = jornadaDetalhe!;
     } on AppException catch (exception) {
       error = exception.message;
     } finally {
       _finishLoading();
+    }
+  }
+
+  Future<JornadaDetalhe?> carregarDetalhe(int id) async {
+    if (detalhesPorJornada.containsKey(id)) return detalhesPorJornada[id];
+    if (detalhesCarregando.contains(id)) return null;
+
+    detalhesCarregando.add(id);
+    error = null;
+    notifyListeners();
+    try {
+      final detalhe = await _service.buscarDetalhe(id);
+      detalhesPorJornada[id] = detalhe;
+      return detalhe;
+    } on AppException catch (exception) {
+      error = exception.message;
+      return null;
+    } finally {
+      detalhesCarregando.remove(id);
+      notifyListeners();
     }
   }
 

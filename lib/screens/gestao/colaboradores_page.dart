@@ -121,7 +121,10 @@ class _ColaboradoresPageState extends State<ColaboradoresPage> {
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
           constraints: const BoxConstraints(maxWidth: 720, minWidth: 420),
-          insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 24,
+          ),
           title: const Text('Novo colaborador'),
           content: SingleChildScrollView(
             child: Form(
@@ -261,7 +264,8 @@ class _ColaboradoresPageState extends State<ColaboradoresPage> {
     return error;
   }
 
-  static String _somenteDigitos(String value) => value.replaceAll(RegExp(r'\D'), '');
+  static String _somenteDigitos(String value) =>
+      value.replaceAll(RegExp(r'\D'), '');
 
   @override
   Widget build(BuildContext context) => Consumer<ColaboradorProvider>(
@@ -313,8 +317,12 @@ class _ColaboradoresPageState extends State<ColaboradoresPage> {
                             return ListTile(
                               leading: CircleAvatar(
                                 backgroundColor: ativo
-                                    ? Theme.of(context).colorScheme.primaryContainer
-                                    : Theme.of(context).colorScheme.surfaceContainerHighest,
+                                    ? Theme.of(
+                                        context,
+                                      ).colorScheme.primaryContainer
+                                    : Theme.of(
+                                        context,
+                                      ).colorScheme.surfaceContainerHighest,
                                 child: Icon(
                                   ativo
                                       ? Icons.person_outline

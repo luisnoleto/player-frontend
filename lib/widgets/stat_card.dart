@@ -8,11 +8,13 @@ class StatCard extends StatelessWidget {
     required this.label,
     required this.value,
     this.icon,
+    this.onTap,
   });
 
   final String label;
   final String value;
   final IconData? icon;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -20,31 +22,43 @@ class StatCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: textTheme.labelMedium?.copyWith(
-                      color: colors.onSurfaceVariant,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: textTheme.labelMedium?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
                     ),
-                  ),
-                  const Gap(6),
-                  Text(value, style: textTheme.headlineSmall),
-                ],
+                    const Gap(6),
+                    Text(value, style: textTheme.headlineSmall),
+                  ],
+                ),
               ),
-            ),
-            if (icon != null) ...[
-              const Gap(12),
-              Icon(icon, color: colors.primary),
+              if (icon != null) ...[
+                const Gap(12),
+                Icon(icon, color: colors.primary),
+              ],
+              if (onTap != null) ...[
+                const Gap(8),
+                Icon(
+                  Icons.chevron_right,
+                  size: 20,
+                  color: colors.onSurfaceVariant,
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1, end: 0);

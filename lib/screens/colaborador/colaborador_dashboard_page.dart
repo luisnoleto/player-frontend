@@ -6,6 +6,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/session_provider.dart';
+import '../../providers/atividade_provider.dart';
 import '../../providers/jornada_provider.dart';
 import '../../providers/relatorio_provider.dart';
 import '../../widgets/adherence_progress_bar.dart';
@@ -37,6 +38,7 @@ class _ColaboradorDashboardPageState extends State<ColaboradorDashboardPage> {
 
     final relatorio = context.read<RelatorioProvider>();
     final jornadas = context.read<JornadaProvider>();
+    final atividades = context.read<AtividadeProvider>();
 
     await Future.wait([
       relatorio.gerarConsolidado(colaboradorId: colaborador.id),
@@ -44,15 +46,16 @@ class _ColaboradorDashboardPageState extends State<ColaboradorDashboardPage> {
         colaboradorId: colaborador.id,
         status: 'EM_ANDAMENTO',
       ),
+      atividades.listarPorColaborador(colaborador.id),
     ]);
 
     if (!mounted) return;
 
-    final error = relatorio.error ?? jornadas.error;
+    final error = relatorio.error ?? jornadas.error ?? atividades.error;
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
     }
   }
 
@@ -68,9 +71,11 @@ class _ColaboradorDashboardPageState extends State<ColaboradorDashboardPage> {
           );
         }
 
-        return Consumer<JornadaProvider>(
-          builder: (context, jornadaProvider, _) {
-            if (relatorioProvider.isLoading || jornadaProvider.isLoading) {
+        return Consumer2<JornadaProvider, AtividadeProvider>(
+          builder: (context, jornadaProvider, atividadeProvider, _) {
+            if (relatorioProvider.isLoading ||
+                jornadaProvider.isLoading ||
+                atividadeProvider.isLoading) {
               return const Scaffold(
                 appBar: _DashboardAppBar(),
                 body: Center(child: CircularProgressIndicator()),
@@ -82,10 +87,8 @@ class _ColaboradorDashboardPageState extends State<ColaboradorDashboardPage> {
                 ? null
                 : jornadaProvider.jornadas.first;
             final totalHorasTrabalhadas = relatorio?.totalHorasTrabalhadas ?? 0;
-            final atividadesPlanejadas =
-                relatorio?.quantidadeAtividadesPlanejadas ?? 0;
-            final atividadesConcluidas =
-                relatorio?.quantidadeAtividadesConcluidas ?? 0;
+            final atividadesPlanejadas = atividadeProvider.planejadas.length;
+            final atividadesConcluidas = atividadeProvider.concluidas.length;
 
             return Scaffold(
               appBar: const _DashboardAppBar(),
@@ -103,34 +106,43 @@ class _ColaboradorDashboardPageState extends State<ColaboradorDashboardPage> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      colaborador.nome,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineSmall,
-                                    ),
-                                  ),
-                                  TextButton.icon(
-                                    onPressed: () {
-                                      context.read<SessionProvider>().limpar();
-                                      context.go('/area-colaborador');
-                                    },
-                                    icon: const Icon(
-                                      LucideIcons.refreshCw,
-                                      size: 18,
-                                    ),
-                                    label: const Text('Trocar'),
-                                  ),
-                                ],
-                              ).animate().fadeIn(duration: 250.ms).slideY(begin: 0.04),
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          colaborador.nome,
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.headlineSmall,
+                                        ),
+                                      ),
+                                      TextButton.icon(
+                                        onPressed: () {
+                                          context
+                                              .read<SessionProvider>()
+                                              .limpar();
+                                          context.go('/area-colaborador');
+                                        },
+                                        icon: const Icon(
+                                          LucideIcons.refreshCw,
+                                          size: 18,
+                                        ),
+                                        label: const Text('Trocar'),
+                                      ),
+                                    ],
+                                  )
+                                  .animate()
+                                  .fadeIn(duration: 250.ms)
+                                  .slideY(begin: 0.04),
                               const Gap(20),
                               StatCard(
-                                label: 'Horas Trabalhadas',
-                                value: '${totalHorasTrabalhadas.toStringAsFixed(1)} h',
-                                icon: LucideIcons.clock3,
-                              ).animate().fadeIn(duration: 250.ms).slideY(begin: 0.04),
+                                    label: 'Horas Trabalhadas',
+                                    value:
+                                        '${totalHorasTrabalhadas.toStringAsFixed(1)} h',
+                                    icon: LucideIcons.clock3,
+                                  )
+                                  .animate()
+                                  .fadeIn(duration: 250.ms)
+                                  .slideY(begin: 0.04),
                               const Gap(20),
                               Text(
                                 'Atividades',
@@ -139,25 +151,42 @@ class _ColaboradorDashboardPageState extends State<ColaboradorDashboardPage> {
                               const Gap(12),
                               LayoutBuilder(
                                 builder: (context, constraints) {
-                                  final shouldStack = constraints.maxWidth < 420;
+                                  final shouldStack =
+                                      constraints.maxWidth < 420;
 
                                   final plannedCard = StatCard(
                                     label: 'Planejadas',
                                     value: '$atividadesPlanejadas',
                                     icon: LucideIcons.listTodo,
+                                    onTap: () => context.push(
+                                      '/area-colaborador/atividades/planejadas',
+                                    ),
                                   );
                                   final doneCard = StatCard(
                                     label: 'Concluídas',
                                     value: '$atividadesConcluidas',
                                     icon: LucideIcons.circleCheckBig,
+                                    onTap: () => context.push(
+                                      '/area-colaborador/atividades/concluidas',
+                                    ),
                                   );
 
                                   if (shouldStack) {
                                     return Column(
                                       children: [
-                                        plannedCard.animate(delay: 100.ms).fadeIn(duration: 250.ms).scale(begin: const Offset(0.9, 0.9)),
+                                        plannedCard
+                                            .animate(delay: 100.ms)
+                                            .fadeIn(duration: 250.ms)
+                                            .scale(
+                                              begin: const Offset(0.9, 0.9),
+                                            ),
                                         const Gap(12),
-                                        doneCard.animate(delay: 180.ms).fadeIn(duration: 250.ms).scale(begin: const Offset(0.9, 0.9)),
+                                        doneCard
+                                            .animate(delay: 180.ms)
+                                            .fadeIn(duration: 250.ms)
+                                            .scale(
+                                              begin: const Offset(0.9, 0.9),
+                                            ),
                                       ],
                                     );
                                   }
@@ -165,11 +194,21 @@ class _ColaboradorDashboardPageState extends State<ColaboradorDashboardPage> {
                                   return Row(
                                     children: [
                                       Expanded(
-                                        child: plannedCard.animate(delay: 100.ms).fadeIn(duration: 250.ms).scale(begin: const Offset(0.9, 0.9)),
+                                        child: plannedCard
+                                            .animate(delay: 100.ms)
+                                            .fadeIn(duration: 250.ms)
+                                            .scale(
+                                              begin: const Offset(0.9, 0.9),
+                                            ),
                                       ),
                                       const Gap(12),
                                       Expanded(
-                                        child: doneCard.animate(delay: 180.ms).fadeIn(duration: 250.ms).scale(begin: const Offset(0.9, 0.9)),
+                                        child: doneCard
+                                            .animate(delay: 180.ms)
+                                            .fadeIn(duration: 250.ms)
+                                            .scale(
+                                              begin: const Offset(0.9, 0.9),
+                                            ),
                                       ),
                                     ],
                                   );
@@ -186,13 +225,18 @@ class _ColaboradorDashboardPageState extends State<ColaboradorDashboardPage> {
                                 runSpacing: 12,
                                 children: [
                                   FilledButton.icon(
-                                    onPressed: () => jornadaAtiva == null
-                                        ? context.push(
-                                            '/area-colaborador/iniciar',
-                                          )
-                                        : context.push(
-                                            '/area-colaborador/encerrar/${jornadaAtiva.id}',
-                                          ),
+                                    onPressed: () async {
+                                      if (jornadaAtiva == null) {
+                                        await context.push(
+                                          '/area-colaborador/iniciar',
+                                        );
+                                      } else {
+                                        await context.push(
+                                          '/area-colaborador/encerrar/${jornadaAtiva.id}',
+                                        );
+                                      }
+                                      if (mounted) await _carregarDados();
+                                    },
                                     icon: Icon(
                                       jornadaAtiva == null
                                           ? LucideIcons.play

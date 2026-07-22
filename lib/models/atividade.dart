@@ -1,3 +1,5 @@
+import 'jornada_resumo.dart';
+
 enum TipoAtividade {
   planejada,
   naoPlanejada;
@@ -30,6 +32,10 @@ class Atividade {
     required this.status,
     required this.jornadaId,
     required this.colaboradorId,
+    required this.colaboradorNome,
+    required this.jornadaEntrada,
+    this.jornadaSaida,
+    required this.jornadaStatus,
     required this.dataCadastro,
     this.dataConclusao,
   });
@@ -40,6 +46,10 @@ class Atividade {
   final StatusAtividade status;
   final int jornadaId;
   final int colaboradorId;
+  final String colaboradorNome;
+  final DateTime jornadaEntrada;
+  final DateTime? jornadaSaida;
+  final StatusJornada jornadaStatus;
   final DateTime dataCadastro;
   final DateTime? dataConclusao;
 
@@ -52,6 +62,12 @@ class Atividade {
     status: StatusAtividade.fromJson(json['status'] as String),
     jornadaId: (json['jornadaId'] as num).toInt(),
     colaboradorId: (json['colaboradorId'] as num).toInt(),
+    colaboradorNome: json['colaboradorNome'] as String,
+    jornadaEntrada: DateTime.parse(json['jornadaEntrada'] as String),
+    jornadaSaida: json['jornadaSaida'] == null
+        ? null
+        : DateTime.parse(json['jornadaSaida'] as String),
+    jornadaStatus: StatusJornada.fromJson(json['jornadaStatus'] as String),
     dataCadastro: DateTime.parse(json['dataCadastro'] as String),
     dataConclusao: json['dataConclusao'] == null
         ? null

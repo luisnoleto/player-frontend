@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/session_provider.dart';
 import '../../providers/jornada_provider.dart';
-import '../../widgets/jornada_list_tile.dart';
+import '../../widgets/jornada_expansion_card.dart';
 
 class HistoricoPage extends StatefulWidget {
   const HistoricoPage({super.key});
@@ -51,9 +51,8 @@ class _HistoricoPageState extends State<HistoricoPage> {
                 itemCount: provider.historico.length,
                 itemBuilder: (context, index) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
-                  child: JornadaListTile(
+                  child: JornadaExpansionCard(
                     jornada: provider.historico[index],
-                    mostrarColaborador: false,
                   ),
                 ),
               ),

@@ -38,9 +38,9 @@ class _JornadasConsultaPageState extends State<JornadasConsultaPage> {
     if (!mounted) return;
     final error = colaboradores.error ?? jornadas.error;
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
     }
   }
 
@@ -53,9 +53,9 @@ class _JornadasConsultaPageState extends State<JornadasConsultaPage> {
       fim: _fim,
     );
     if (mounted && provider.error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(provider.error!)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(provider.error!)));
     }
   }
 
@@ -137,7 +137,7 @@ class _JornadasConsultaPageState extends State<JornadasConsultaPage> {
       ),
     );
   }
-  
+
   @override
   Widget build(BuildContext context) =>
       Consumer2<ColaboradorProvider, JornadaProvider>(
@@ -183,9 +183,7 @@ class _JornadasConsultaPageState extends State<JornadasConsultaPage> {
                 ),
                 Expanded(
                   child: jornadasProvider.jornadas.isEmpty
-                      ? const Center(
-                          child: Text('Nenhuma jornada encontrada'),
-                        )
+                      ? const Center(child: Text('Nenhuma jornada encontrada'))
                       : ListView.separated(
                           itemCount: jornadasProvider.jornadas.length,
                           separatorBuilder: (_, _) => const Divider(height: 1),
@@ -282,8 +280,9 @@ class _SearchableSelectionDialogState<T>
                   final item = filtrados[index - 1];
                   return ListTile(
                     title: Text(item.title),
-                    subtitle:
-                        item.subtitle == null ? null : Text(item.subtitle!),
+                    subtitle: item.subtitle == null
+                        ? null
+                        : Text(item.subtitle!),
                     onTap: () => Navigator.of(context).pop(item.value),
                   );
                 },
@@ -302,7 +301,7 @@ class _SearchableSelectionDialogState<T>
   }
 }
 
- class _FiltrosJornada extends StatelessWidget {
+class _FiltrosJornada extends StatelessWidget {
   const _FiltrosJornada({
     required this.status,
     required this.colaboradorId,

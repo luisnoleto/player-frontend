@@ -4,6 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/session_provider.dart';
+import '../../providers/atividade_provider.dart';
 import '../../providers/jornada_provider.dart';
 import '../../providers/relatorio_provider.dart';
 import '../../widgets/adherence_progress_bar.dart';
@@ -28,13 +29,15 @@ class _GestaoDashboardPageState extends State<GestaoDashboardPage> {
     if (!mounted) return;
     final relatorio = context.read<RelatorioProvider>();
     final jornadas = context.read<JornadaProvider>();
+    final atividades = context.read<AtividadeProvider>();
     await Future.wait([
       relatorio.gerarConsolidado(),
       jornadas.listarComFiltros(),
+      atividades.listarTodas(),
     ]);
 
     if (!mounted) return;
-    final error = relatorio.error ?? jornadas.error;
+    final error = relatorio.error ?? jornadas.error ?? atividades.error;
     if (error != null) {
       ScaffoldMessenger.of(
         context,
@@ -45,9 +48,11 @@ class _GestaoDashboardPageState extends State<GestaoDashboardPage> {
   @override
   Widget build(
     BuildContext context,
-  ) => Consumer2<RelatorioProvider, JornadaProvider>(
-    builder: (context, relatorioProvider, jornadaProvider, _) {
-      if (relatorioProvider.isLoading || jornadaProvider.isLoading) {
+  ) => Consumer3<RelatorioProvider, JornadaProvider, AtividadeProvider>(
+    builder: (context, relatorioProvider, jornadaProvider, atividadeProvider, _) {
+      if (relatorioProvider.isLoading ||
+          jornadaProvider.isLoading ||
+          atividadeProvider.isLoading) {
         return Scaffold(
           appBar: AppBar(title: const Text('Área de Gestão')),
           body: const Center(child: CircularProgressIndicator()),
@@ -91,16 +96,18 @@ class _GestaoDashboardPageState extends State<GestaoDashboardPage> {
                   Expanded(
                     child: StatCard(
                       label: 'Planejadas',
-                      value:
-                          '${relatorio?.quantidadeAtividadesPlanejadas ?? 0}',
+                      value: '${atividadeProvider.planejadas.length}',
+                      onTap: () =>
+                          context.push('/gestao/atividades/planejadas'),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: StatCard(
                       label: 'Concluídas',
-                      value:
-                          '${relatorio?.quantidadeAtividadesConcluidas ?? 0}',
+                      value: '${atividadeProvider.concluidas.length}',
+                      onTap: () =>
+                          context.push('/gestao/atividades/concluidas'),
                     ),
                   ),
                 ],
@@ -115,7 +122,7 @@ class _GestaoDashboardPageState extends State<GestaoDashboardPage> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
-             if (ultimasJornadas.isEmpty)
+              if (ultimasJornadas.isEmpty)
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 16),
                   child: Text('Nenhuma jornada encontrada.'),

@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../screens/auth/login_page.dart';
+import '../screens/atividades/atividades_page.dart';
 import '../screens/colaborador/colaborador_dashboard_page.dart';
 import '../screens/colaborador/colaborador_selector_page.dart';
 import '../screens/colaborador/encerrar_jornada_page.dart';
@@ -40,10 +41,24 @@ final GoRouter appRouter = GoRouter(
       builder: (_, _) => const HistoricoPage(),
     ),
     GoRoute(
+      path: '/area-colaborador/atividades/:filtro',
+      builder: (_, state) => AtividadesPage(
+        concluidas: state.pathParameters['filtro'] == 'concluidas',
+        mostrarColaborador: false,
+      ),
+    ),
+    GoRoute(
       path: '/colaboradores',
       builder: (_, _) => const ColaboradoresPage(),
     ),
     GoRoute(path: '/gestao', builder: (_, _) => const GestaoDashboardPage()),
+    GoRoute(
+      path: '/gestao/atividades/:filtro',
+      builder: (_, state) => AtividadesPage(
+        concluidas: state.pathParameters['filtro'] == 'concluidas',
+        mostrarColaborador: true,
+      ),
+    ),
     GoRoute(
       path: '/gestao/jornadas',
       builder: (_, _) => const JornadasConsultaPage(),

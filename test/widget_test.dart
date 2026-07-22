@@ -12,6 +12,7 @@ import 'package:frontend/main.dart';
 void main() {
   testWidgets('login screen is displayed', (WidgetTester tester) async {
     await tester.pumpWidget(const MyApp());
+    await tester.pump(const Duration(milliseconds: 400));
     expect(find.text('Usuário'), findsOneWidget);
     expect(find.text('Senha'), findsOneWidget);
   });
