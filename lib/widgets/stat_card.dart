@@ -9,12 +9,14 @@ class StatCard extends StatelessWidget {
     required this.value,
     this.icon,
     this.onTap,
+    this.tooltip,
   });
 
   final String label;
   final String value;
   final IconData? icon;
   final VoidCallback? onTap;
+  final String? tooltip;
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +36,29 @@ class StatCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      label,
-                      style: textTheme.labelMedium?.copyWith(
-                        color: colors.onSurfaceVariant,
-                      ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            label,
+                            style: textTheme.labelMedium?.copyWith(
+                              color: colors.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                        if (tooltip != null) ...[
+                          const Gap(5),
+                          Tooltip(
+                            message: tooltip!,
+                            child: Icon(
+                              Icons.info_outline,
+                              size: 15,
+                              color: colors.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                     const Gap(6),
                     Text(value, style: textTheme.headlineSmall),

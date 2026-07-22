@@ -31,7 +31,7 @@ class _GestaoDashboardPageState extends State<GestaoDashboardPage> {
     final jornadas = context.read<JornadaProvider>();
     final atividades = context.read<AtividadeProvider>();
     await Future.wait([
-      relatorio.gerarConsolidado(),
+      relatorio.carregarVisaoGestaoUltimosTrintaDias(),
       jornadas.listarComFiltros(),
       atividades.listarTodas(),
     ]);
@@ -59,7 +59,7 @@ class _GestaoDashboardPageState extends State<GestaoDashboardPage> {
         );
       }
 
-      final relatorio = relatorioProvider.relatorio;
+      final relatorio = relatorioProvider.relatorioGestao;
       final ultimasJornadas = jornadaProvider.jornadas.take(5).toList();
       return Scaffold(
         appBar: AppBar(
@@ -88,7 +88,11 @@ class _GestaoDashboardPageState extends State<GestaoDashboardPage> {
               StatCard(
                 label: 'Horas Trabalhadas',
                 value:
-                    '${relatorio?.totalHorasTrabalhadas.toStringAsFixed(1) ?? '0.0'} h',
+                    '${relatorioProvider.horasEquipe?.totalHoras.toStringAsFixed(1) ?? '0.0'} h',
+                icon: LucideIcons.clock3,
+                tooltip:
+                    'Total da equipe considerando as jornadas finalizadas nos últimos 30 dias.',
+                onTap: () => context.push('/gestao/horas-trabalhadas'),
               ),
               const SizedBox(height: 12),
               Row(

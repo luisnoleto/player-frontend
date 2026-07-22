@@ -37,7 +37,7 @@ class AtividadeCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   width: 42,
@@ -57,27 +57,27 @@ class AtividadeCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        atividade.descricao,
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w600),
-                      ),
-                      if (mostrarColaborador) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          atividade.colaboradorNome,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: colors.onSurfaceVariant),
-                        ),
-                      ],
-                    ],
+                  child: Text(
+                    atividade.descricao,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
             ),
+            if (mostrarColaborador) ...[
+              const SizedBox(height: 7),
+              Padding(
+                padding: const EdgeInsets.only(left: 54),
+                child: Text(
+                  atividade.colaboradorNome,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colors.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 14),
             Wrap(
               spacing: 8,

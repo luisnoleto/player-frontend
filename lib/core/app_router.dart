@@ -9,6 +9,7 @@ import '../screens/colaborador/historico_page.dart';
 import '../screens/colaborador/iniciar_jornada_page.dart';
 import '../screens/gestao/colaboradores_page.dart';
 import '../screens/gestao/gestao_dashboard_page.dart';
+import '../screens/gestao/horas_colaboradores_page.dart';
 import '../screens/gestao/jornadas_consulta_page.dart';
 import '../screens/gestao/relatorios_page.dart';
 import '../screens/gestao/rpa_registros_page.dart';
@@ -52,6 +53,10 @@ final GoRouter appRouter = GoRouter(
       builder: (_, _) => const ColaboradoresPage(),
     ),
     GoRoute(path: '/gestao', builder: (_, _) => const GestaoDashboardPage()),
+    GoRoute(
+      path: '/gestao/horas-trabalhadas',
+      builder: (_, _) => const HorasColaboradoresPage(),
+    ),
     GoRoute(
       path: '/gestao/atividades/:filtro',
       builder: (_, state) => AtividadesPage(
