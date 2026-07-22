@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -46,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       return;
     }
+    TextInput.finishAutofillContext(shouldSave: true);
     context.go(session.isGestor ? '/gestao' : '/area-colaborador/dashboard');
   }
 
@@ -63,79 +65,89 @@ class _LoginPageState extends State<LoginPage> {
             child: Card(
               child: Padding(
                 padding: const EdgeInsets.all(28),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 102,
-                        height: 102,
-                        decoration: BoxDecoration(
-                          color: colors.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(24),
-                          child: Image.asset(
-                            '../../lib/assets/playerLogo.png',
-                            fit: BoxFit.cover,
+                child: AutofillGroup(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Center(
+                        child: Container(
+                          width: 102,
+                          height: 102,
+                          decoration: BoxDecoration(
+                            color: colors.surfaceContainerHighest,
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(24),
+                            child: Image.asset(
+                              '../../lib/assets/playerLogo.png',
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const Gap(24),
-                    Text(
-                      'Bem-vindo',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    const Gap(24),
-                    TextField(
-                      controller: _usuarioController,
-                      onChanged: (_) => setState(() {}),
-                      textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        labelText: 'Usuário',
-                        border: OutlineInputBorder(),
+                      const Gap(24),
+                      Text(
+                        'Bem-vindo',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
-                    ),
-                    const Gap(16),
-                    TextField(
-                      controller: _senhaController,
-                      onChanged: (_) => setState(() {}),
-                      obscureText: !_senhaVisivel,
-                      onSubmitted: (_) {
-                        if (!carregando) _entrar();
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Senha',
-                        border: const OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                          onPressed: () =>
-                              setState(() => _senhaVisivel = !_senhaVisivel),
-                          tooltip: _senhaVisivel
-                              ? 'Ocultar senha'
-                              : 'Mostrar senha',
-                          icon: Icon(
-                            _senhaVisivel
-                                ? LucideIcons.eyeOff
-                                : LucideIcons.eye,
+                      const Gap(24),
+                      TextField(
+                        controller: _usuarioController,
+                        onChanged: (_) => setState(() {}),
+                        autofillHints: const [AutofillHints.username],
+                        autocorrect: false,
+                        enableSuggestions: true,
+                        textInputAction: TextInputAction.next,
+                        decoration: const InputDecoration(
+                          labelText: 'Usuário',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const Gap(16),
+                      TextField(
+                        controller: _senhaController,
+                        onChanged: (_) => setState(() {}),
+                        autofillHints: const [AutofillHints.password],
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        obscureText: !_senhaVisivel,
+                        onSubmitted: (_) {
+                          if (!carregando) _entrar();
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Senha',
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            onPressed: () =>
+                                setState(() => _senhaVisivel = !_senhaVisivel),
+                            tooltip: _senhaVisivel
+                                ? 'Ocultar senha'
+                                : 'Mostrar senha',
+                            icon: Icon(
+                              _senhaVisivel
+                                  ? LucideIcons.eyeOff
+                                  : LucideIcons.eye,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const Gap(24),
-                    FilledButton(
-                      onPressed: _podeEntrar && !carregando ? _entrar : null,
-                      child: carregando
-                          ? const SizedBox.square(
-                              dimension: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Text('Entrar'),
-                    ),
-                  ],
+                      const Gap(24),
+                      FilledButton(
+                        onPressed: _podeEntrar && !carregando ? _entrar : null,
+                        child: carregando
+                            ? const SizedBox.square(
+                                dimension: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text('Entrar'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ).animate().fadeIn(duration: 350.ms).slideY(begin: 0.08, end: 0),

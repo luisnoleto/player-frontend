@@ -26,5 +26,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.text('Usuário'), findsOneWidget);
     expect(find.text('Senha'), findsOneWidget);
+
+    final campos = tester
+        .widgetList<TextField>(find.byType(TextField))
+        .toList();
+    expect(campos[0].autofillHints, contains(AutofillHints.username));
+    expect(campos[1].autofillHints, contains(AutofillHints.password));
   });
 }
